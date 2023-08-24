@@ -1,9 +1,13 @@
 package com.zfinance.authmanager.repositories;
 
-import org.springframework.data.jpa.repository.JpaRepository;
+import java.util.Optional;
+
+import org.springframework.data.cassandra.repository.CassandraRepository;
 
 import com.zfinance.authmanager.orm.ZFinConfig;
 
-public interface ZFinConfigRepository extends JpaRepository<ZFinConfig, Long> {
+public interface ZFinConfigRepository extends CassandraRepository<ZFinConfig, Long> {
+
+	Optional<ZFinConfig> findByCode(String code);
 
 }
