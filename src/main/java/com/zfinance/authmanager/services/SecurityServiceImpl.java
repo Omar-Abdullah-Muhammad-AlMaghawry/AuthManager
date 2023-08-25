@@ -14,6 +14,7 @@ import javax.naming.ldap.InitialLdapContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.zfinance.authmanager.dto.requests.login.LoginRequestDto;
@@ -37,6 +38,9 @@ public class SecurityServiceImpl implements SecurityService {
 
 	@Autowired
 	private UserService userService;
+
+	@Autowired
+	private PasswordEncoder passwordEncoder;
 
 	@Override
 	public String login(LoginRequestDto loginRequestDto) throws BusinessException {
@@ -67,6 +71,18 @@ public class SecurityServiceImpl implements SecurityService {
 		}
 	}
 
+	private User authUser(String username, String password) throws Exception {
+
+		User user = userService.getUserByEmail(username);
+
+//		if (user != null && passwordEncoder.matches(password, user.getPassword())) {
+		return user;
+//		} else {
+//			throw new BusinessException("error_invalidUserOrPassword");
+//		}
+
+	}
+
 	@Override
 	public User authenticateUser(String username, String password) throws BusinessException {
 		if ((FlagsEnum.ON.getCode() + "").equals(noLdapFlag)) {
@@ -78,9 +94,10 @@ public class SecurityServiceImpl implements SecurityService {
 		}
 
 		try {
-			System.out.println("#:LDAP authentication for : " + username);
-			getContext(username, password);
-			return getUserData(username);
+//			System.out.println("#:LDAP authentication for : " + username);
+//			getContext(username, password);
+//			return getUserData(username);
+			return authUser(username, password);
 		} catch (AuthenticationException e) {
 			throw new BusinessException("error_invalidUser");
 		} catch (BusinessException e) {
