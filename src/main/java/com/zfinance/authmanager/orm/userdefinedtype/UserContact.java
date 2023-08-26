@@ -13,18 +13,18 @@ import lombok.Setter;
 @UserDefinedType("user_contact_type")
 public class UserContact {
 
-	@Column("phone_number")
+	@Column("PHONE_NUMBER")
 	private String phoneNumber;
 
-	@Column("phone_verified")
+	@Column("PHONE_VERIFIED")
 	private boolean phoneVerified;
 
-	@Column("email")
+	@Column("EMAIL")
 	private String email;
 
-	@Column("email_verified")
+	@Column("EMAIL_VERIFIED")
 	private boolean emailVerified;
 
-	@Column("country_code")
+	@Column("COUNTRY_CODE")
 	private String countryCode;
 }

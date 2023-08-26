@@ -13,25 +13,25 @@ import lombok.Setter;
 @UserDefinedType("user_organization_type")
 public class UserOrganization {
 
-	@Column("status")
+	@Column("STATUS")
 	private String status;
 
-	@Column("message")
+	@Column("MESSAGE")
 	private String message;
 
-	@Column("id")
+	@Column("ID")
 	private String id;
 
-	@Column("type")
+	@Column("ORGANIZTION_TYPE")
 	private String type;
 
-	@Column("name")
+	@Column("NAME")
 	private String name;
 
-	@Column("identificationStatus")
+	@Column("IDENTIFICATION_STATUS")
 	private String identificationStatus;
 
-	@Column("organizationStatus")
+	@Column("ORGANIZATION_STATUS")
 	private String organizationStatus;
 
 }

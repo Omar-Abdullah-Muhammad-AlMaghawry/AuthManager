@@ -21,29 +21,29 @@ import lombok.Setter;
 public class User {
 
 	@PrimaryKey
-	@Column("id")
+	@Column("ID")
 	private String id;
 
-	@Column("name")
+	@Column("NAME")
 	private String name;
 
-	@Column("created_at")
+	@Column("CREATED_AT")
 	private String createdAt;
 
-	@Column("active")
+	@Column("ACTIVE")
 	private boolean active;
 
-	@Column("banned")
+	@Column("BANNED")
 	private boolean banned;
 
-	@Column("ban_expiry_date")
+	@Column("BAN_EXPIRY_DATE")
 	private String banExpiryDate;
 
-	@Column("contact")
+	@Column("CONTACT")
 	@CassandraType(type = CassandraType.Name.UDT, userTypeName = "user_contact_type")
 	private UserContact contact;
 
-	@Column("members")
+	@Column("MEMBERS")
 	private List<UserMemberRecord> members;
 
 }

@@ -14,17 +14,17 @@ import lombok.Setter;
 @UserDefinedType("user_membe_record_type")
 public class UserMemberRecord {
 
-	@Column("id")
+	@Column("ID")
 	private String id;
 
-	@Column("role")
+	@Column("ROLE")
 	private String role;
 
-	@Column("organization")
+	@Column("ORGANIZATION")
 	@CassandraType(type = CassandraType.Name.UDT, userTypeName = "user_organization_type")
 	private UserOrganization organization;
 
-	@Column("contract_info")
+	@Column("CONTACT_INFO")
 	@CassandraType(type = CassandraType.Name.UDT, userTypeName = "user_contact_info_type")
 	private UserContractInfo contractInfo;
 }
