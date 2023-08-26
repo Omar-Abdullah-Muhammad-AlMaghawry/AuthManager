@@ -19,7 +19,7 @@ public class AuthController {
 	@Autowired
 	private SecurityService securityService;
 
-	@PostMapping(value = "/login")
+	@PostMapping(value = "/authorization")
 	public ResponseEntity<?> createAuthenticationToken(@RequestBody LoginRequestDto loginRequestDto) {
 		try {
 			return ResponseEntity.ok(securityService.login(loginRequestDto));

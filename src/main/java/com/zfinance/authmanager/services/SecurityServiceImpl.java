@@ -21,7 +21,7 @@ import com.zfinance.authmanager.dto.requests.login.LoginRequestDto;
 import com.zfinance.authmanager.enums.FlagsEnum;
 import com.zfinance.authmanager.exceptions.BusinessException;
 import com.zfinance.authmanager.orm.User;
-import com.zfinance.authmanager.orm.UserContact;
+import com.zfinance.authmanager.orm.userdefinedtype.UserContact;
 import com.zfinance.authmanager.security.JwtTokenUtil;
 
 @Service

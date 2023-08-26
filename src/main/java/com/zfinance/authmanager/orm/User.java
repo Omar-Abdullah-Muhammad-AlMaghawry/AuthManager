@@ -2,10 +2,13 @@ package com.zfinance.authmanager.orm;
 
 import java.util.List;
 
-import org.springframework.data.annotation.Id;
+import org.springframework.data.cassandra.core.mapping.CassandraType;
 import org.springframework.data.cassandra.core.mapping.Column;
 import org.springframework.data.cassandra.core.mapping.PrimaryKey;
 import org.springframework.data.cassandra.core.mapping.Table;
+
+import com.zfinance.authmanager.orm.userdefinedtype.UserContact;
+import com.zfinance.authmanager.orm.userdefinedtype.UserMemberRecord;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,33 +17,33 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-@Table("ZFIN_User")
+@Table("ZFIN_USER")
 public class User {
 
-	@Id
 	@PrimaryKey
-	@Column("ID")
+	@Column("id")
 	private String id;
 
-	@Column("NAME")
+	@Column("name")
 	private String name;
 
-	@Column("CREATED_AT")
+	@Column("created_at")
 	private String createdAt;
 
-	@Column("ACTIVE")
+	@Column("active")
 	private boolean active;
 
-	@Column("BANNED")
+	@Column("banned")
 	private boolean banned;
 
-	@Column("BAN_EXPIRY_DATE")
+	@Column("ban_expiry_date")
 	private String banExpiryDate;
 
-	@Column("CONTACT")
+	@Column("contact")
+	@CassandraType(type = CassandraType.Name.UDT, userTypeName = "user_contact_type")
 	private UserContact contact;
 
-	@Column("MEMBERS")
+	@Column("members")
 	private List<UserMemberRecord> members;
 
 }
