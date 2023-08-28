@@ -38,8 +38,8 @@ public class JwtTokenUtil {
 		return Jwts.parserBuilder().setSigningKey(getSigningKey()).build().parseClaimsJws(token).getBody();
 	}
 
-	// get username from jwt token
-	public String getUsernameFromToken(String token) {
+	// get login from jwt token
+	public String getLoginFromToken(String token) {
 		return getClaimFromToken(token, Claims::getSubject);
 	}
 
@@ -56,13 +56,13 @@ public class JwtTokenUtil {
 
 	private String doGenerateToken(Map<String, Object> claims, String subject) {
 		return Jwts.builder().setClaims(claims).setSubject(subject).setIssuedAt(new Date(System.currentTimeMillis()))
-				.setExpiration(new Date(System.currentTimeMillis() + jwtTokenValiditySeconds * 1000))
-				.signWith(getSigningKey()).compact();
+				.setExpiration(new Date(System.currentTimeMillis() + jwtTokenValiditySeconds * 1000)).signWith(
+						getSigningKey()).compact();
 	}
 
-	public String generateToken(String username) {
+	public String generateToken(String login) {
 		Map<String, Object> claims = new HashMap<String, Object>();
-		return doGenerateToken(claims, username);
+		return doGenerateToken(claims, login);
 	}
 
 	// validate token

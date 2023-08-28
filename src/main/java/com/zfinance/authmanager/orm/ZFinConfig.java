@@ -11,22 +11,22 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-@Table("ZFIN_CONFIG")
+@Table("zfin_config")
 public class ZFinConfig {
 
 	@PrimaryKey
-	@Column("ID")
+	@Column("id")
 	private Long id;
 
-	@Column("CODE")
+	@Column("code")
 	private String code;
 
-	@Column("VALUE")
+	@Column("value")
 	private String value;
 
-	@Column("REMARKS")
+	@Column("remarks")
 	private String remarks;
 
-	@Column("TRANSACTION_CLASS")
+	@Column("transaction_class")
 	private Integer transactionClass;
 }

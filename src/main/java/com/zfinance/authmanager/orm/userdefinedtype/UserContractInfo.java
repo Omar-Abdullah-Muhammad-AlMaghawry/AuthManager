@@ -13,12 +13,12 @@ import lombok.Setter;
 @UserDefinedType("user_contract_info_type")
 public class UserContractInfo {
 
-	@Column("ID")
+	@Column("id")
 	private String id;
 
-	@Column("PERSON_TYPE")
+	@Column("person_type")
 	private String personType;
 
-	@Column("NAME")
+	@Column("name")
 	private String name;
 }

@@ -4,7 +4,9 @@ import com.zfinance.authmanager.orm.User;
 
 public interface UserService {
 
-	User getUserByEmail(String email);
+	public User getUserByLogin(String login);
+
+	public User getUserByLoginAndEncPassword(String login, String encPassword);
 
 	void save(User user);
 
