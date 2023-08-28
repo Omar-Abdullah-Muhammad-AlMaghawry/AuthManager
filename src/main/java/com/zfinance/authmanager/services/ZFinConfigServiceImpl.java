@@ -1,7 +1,5 @@
 package com.zfinance.authmanager.services;
 
-import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,9 +15,9 @@ public class ZFinConfigServiceImpl implements ZFinConfigService {
 
 	@Override
 	public String getConfigValueByCode(String code) throws BusinessException {
-		Optional<ZFinConfig> etrConfigOptional = zFinConfigRepository.findByCode(code);
-		if (etrConfigOptional.isPresent())
-			return etrConfigOptional.get().getValue();
+		ZFinConfig etrConfigOptional = zFinConfigRepository.findByCode(code);
+		if (etrConfigOptional != null)
+			return etrConfigOptional.getValue();
 		else
 			return null;
 	}

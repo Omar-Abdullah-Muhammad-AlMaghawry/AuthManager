@@ -46,6 +46,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 				e.printStackTrace();
 			}
 		}
+		filterChain.doFilter(request, response);
 	}
 
 }
