@@ -22,6 +22,10 @@ public interface ZFinConfigService {
 
 	public String getLDAPPort() throws BusinessException;;
 
-	public String getLDAPIPS() throws BusinessException;;
+	public String getLDAPIPS() throws BusinessException;
+
+	public String getVerificationEmailBody() throws BusinessException;
+
+	public String getVerificationEmailSubject() throws BusinessException;;
 
 }

@@ -2,7 +2,6 @@ package com.zfinance.authmanager.orm;
 
 import java.util.List;
 
-import org.springframework.data.cassandra.core.mapping.CassandraType;
 import org.springframework.data.cassandra.core.mapping.Column;
 import org.springframework.data.cassandra.core.mapping.PrimaryKey;
 import org.springframework.data.cassandra.core.mapping.Table;
@@ -27,6 +26,12 @@ public class User {
 	@Column("name")
 	private String name;
 
+	@Column("email")
+	private String email;
+
+	@Column("enc_password")
+	private String encPassword;
+
 	@Column("created_at")
 	private String createdAt;
 
@@ -40,7 +45,6 @@ public class User {
 	private String banExpiryDate;
 
 	@Column("contact")
-	@CassandraType(type = CassandraType.Name.UDT, userTypeName = "user_contact_type")
 	private UserContact contact;
 
 	@Column("members")

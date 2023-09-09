@@ -67,4 +67,14 @@ public class ZFinConfigServiceImpl implements ZFinConfigService {
 		return getConfigValueByCode(ZFinConfigsEnum.LDAP_PORT.getCode());
 	}
 
+	@Override
+	public String getVerificationEmailBody() throws BusinessException {
+		return getConfigValueByCode(ZFinConfigsEnum.VERIFICATION_EMAIL_BODY.getCode());
+	}
+
+	@Override
+	public String getVerificationEmailSubject() throws BusinessException {
+		return getConfigValueByCode(ZFinConfigsEnum.VERIFICATION_EMAIL_SUBJECT.getCode());
+	}
+
 }

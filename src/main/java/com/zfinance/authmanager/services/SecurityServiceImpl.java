@@ -34,7 +34,7 @@ public class SecurityServiceImpl implements SecurityService {
 
 	@Override
 	public String login(LoginRequestDto loginRequestDto) throws BusinessException {
-		User user = authenticateUser(loginRequestDto.getLogin(), loginRequestDto.getPassword());
+		authenticateUser(loginRequestDto.getLogin(), loginRequestDto.getPassword());
 		return jwtTokenUtil.generateToken(loginRequestDto.getLogin());
 	}
 
@@ -63,15 +63,13 @@ public class SecurityServiceImpl implements SecurityService {
 
 	private User authUser(String login, String password) throws Exception {
 
-		String encPassword = passwordEncoder.encode(password);
+		User user = userService.getUserByLogin(login);
 
-		User user = userService.getUserByLoginAndEncPassword(login, encPassword);
-
-//		if (user != null) {
-		return user;
-//		} else {
-//			throw new BusinessException("error_invalidUserOrPassword");
-//		}
+		if (passwordEncoder.matches(password, user.getEncPassword())) {
+			return user;
+		} else {
+			throw new BusinessException("error_invalidUserOrPassword");
+		}
 
 	}
 

@@ -1,6 +1,5 @@
 package com.zfinance.authmanager.orm.userdefinedtype;
 
-import org.springframework.data.cassandra.core.mapping.CassandraType;
 import org.springframework.data.cassandra.core.mapping.Column;
 import org.springframework.data.cassandra.core.mapping.UserDefinedType;
 
@@ -11,7 +10,7 @@ import lombok.Setter;
 @Setter
 @Getter
 @NoArgsConstructor
-@UserDefinedType("user_membe_record_type")
+@UserDefinedType("user_member_record_type")
 public class UserMemberRecord {
 
 	@Column("id")
@@ -21,10 +20,8 @@ public class UserMemberRecord {
 	private String role;
 
 	@Column("organization")
-	@CassandraType(type = CassandraType.Name.UDT, userTypeName = "user_organization_type")
 	private UserOrganization organization;
 
-	@Column("CONTACT_INFO")
-	@CassandraType(type = CassandraType.Name.UDT, userTypeName = "user_contact_info_type")
+	@Column("contract_info")
 	private UserContractInfo contractInfo;
 }

@@ -8,12 +8,13 @@ import com.zfinance.authmanager.orm.User;
 
 public interface UserRepository extends CassandraRepository<User, String> {
 
-	@Query("SELECT * FROM ZFIN_USER WHERE (contact.email = :P_LOGIN OR contact.phoneNumber = :P_LOGIN) ALLOW FILTERING")
-	User findByLogin(@Param("P_LOGIN") String login);
+//	@Query("SELECT * FROM ZFIN_USER WHERE (contact.email = :P_LOGIN OR contact.phoneNumber = :P_LOGIN) ALLOW FILTERING")
+	@Query("SELECT * FROM zfin_user WHERE (email = :p_login) ALLOW FILTERING")
+	User findByLogin(@Param("p_login") String login);
 
-	@Query("SELECT * FROM ZFIN_USER "
-			+ "WHERE (contact.email = :P_LOGIN OR contact.phoneNumber = :P_LOGIN) ALLOW FILTERING")
-//			+ "AND (password = :P_ENC_PASSWORD )")
-	User findByLoginAndEncPassword(@Param("P_LOGIN") String login, @Param("P_ENC_PASSWORD") String encPassword);
+	@Query("SELECT * FROM zfin_user "
+//			+ "WHERE (contact.email = :P_LOGIN OR contact.phoneNumber = :P_LOGIN) ALLOW FILTERING")
+			+ "WHERE (email = :p_login) " + "AND (enc_password = :P_enc_password) ALLOW FILTERING")
+	User findByLoginAndEncPassword(@Param("p_login") String login, @Param("P_enc_password") String encPassword);
 
 }
