@@ -50,7 +50,7 @@ public class AuthController {
 	public ResponseEntity<?> registerUser(@RequestBody User user) {
 		try {
 			userService.saveUser(user);
-			return (ResponseEntity<?>) ResponseEntity.ok();
+			return ResponseEntity.ok("label_registerSuccessed");
 		} catch (Exception e) {
 			return new ResponseEntity<>(e.getMessage(), HttpStatus.UNAUTHORIZED);
 		}
@@ -60,7 +60,7 @@ public class AuthController {
 	public ResponseEntity<?> confirmUserAccount(@RequestParam("token") String confirmationToken) {
 		try {
 			userService.confirmEmail(confirmationToken);
-			return (ResponseEntity<?>) ResponseEntity.ok();
+			return ResponseEntity.ok("Confirmed");
 		} catch (Exception e) {
 			return new ResponseEntity<>(e.getMessage(), HttpStatus.UNAUTHORIZED);
 		}

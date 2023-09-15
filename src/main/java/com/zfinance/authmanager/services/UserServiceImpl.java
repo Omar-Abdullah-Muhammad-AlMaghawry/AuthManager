@@ -70,7 +70,6 @@ public class UserServiceImpl implements UserService {
 			userContact.setEmailVerified(true);
 			userRepository.save(user);
 		} else {
-
 			throw new BusinessException("error_cannotVerifyEmail");
 		}
 	}
