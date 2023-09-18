@@ -1,4 +1,4 @@
-package com.zfinance.authmanager.dto.requests.login;
+package com.zfinance.authmanager.dto.requests.signin;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

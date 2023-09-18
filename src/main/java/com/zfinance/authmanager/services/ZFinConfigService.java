@@ -26,6 +26,10 @@ public interface ZFinConfigService {
 
 	public String getVerificationEmailBody() throws BusinessException;
 
-	public String getVerificationEmailSubject() throws BusinessException;;
+	public String getVerificationEmailSubject() throws BusinessException;
+
+	public String getPasswordRecoverySubject() throws BusinessException;
+
+	public String getPasswordRecoveryBody() throws BusinessException;
 
 }

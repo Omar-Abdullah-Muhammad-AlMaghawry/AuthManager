@@ -8,7 +8,11 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.zfinance.authmanager.dto.requests.login.LoginRequestDto;
+import com.zfinance.authmanager.dto.requests.signin.LoginRequestDto;
+import com.zfinance.authmanager.dto.response.signin.AuthData;
+import com.zfinance.authmanager.dto.response.signin.OrganizationData;
+import com.zfinance.authmanager.dto.response.signin.TokenData;
+import com.zfinance.authmanager.dto.response.signin.UserData;
 import com.zfinance.authmanager.enums.FlagsEnum;
 import com.zfinance.authmanager.exceptions.BusinessException;
 import com.zfinance.authmanager.orm.User;
@@ -36,6 +40,26 @@ public class SecurityServiceImpl implements SecurityService {
 	public String login(LoginRequestDto loginRequestDto) throws BusinessException {
 		authenticateUser(loginRequestDto.getLogin(), loginRequestDto.getPassword());
 		return jwtTokenUtil.generateToken(loginRequestDto.getLogin());
+	}
+
+	@Override
+	public AuthData authorization(LoginRequestDto loginRequestDto) throws BusinessException {
+		User user = authenticateUser(loginRequestDto.getLogin(), loginRequestDto.getPassword());
+		String token = jwtTokenUtil.generateToken(loginRequestDto.getLogin());
+		TokenData tokenData = new TokenData(token, jwtTokenUtil.getExpirationDateFromToken(token).toString());
+		UserData userData = new UserData(user.getId(), user.getName());
+		OrganizationData organizationData = new OrganizationData();
+		String role = null;
+		if (user.getMembers() != null && user.getMembers().size() > 0) {
+			if (user.getMembers().get(0).getOrganization() != null)
+				organizationData = new OrganizationData(user.getMembers().get(0).getOrganization().getId(), user
+						.getMembers().get(0).getOrganization().getType());
+			role = user.getMembers().get(0).getRole();
+		}
+		AuthData authData = new AuthData(tokenData, userData, organizationData, role);
+
+		return authData;
+
 	}
 
 	@Override

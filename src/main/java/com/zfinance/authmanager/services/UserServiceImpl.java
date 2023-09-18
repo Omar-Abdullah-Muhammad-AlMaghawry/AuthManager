@@ -4,19 +4,27 @@ import java.util.Date;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.zfinance.authmanager.dto.requests.signin.PasswordRecoveryConfirmBody;
 import com.zfinance.authmanager.exceptions.BusinessException;
+import com.zfinance.authmanager.orm.ConfirmationOtp;
 import com.zfinance.authmanager.orm.ConfirmationToken;
 import com.zfinance.authmanager.orm.User;
 import com.zfinance.authmanager.orm.userdefinedtype.UserContact;
+import com.zfinance.authmanager.repositories.ConfirmationOtpRepository;
 import com.zfinance.authmanager.repositories.ConfirmationTokenRepository;
 import com.zfinance.authmanager.repositories.UserRepository;
 import com.zfinance.authmanager.security.JwtTokenUtil;
 
 @Service
 public class UserServiceImpl implements UserService {
+
+	@Value("${otp.secondsValidity}")
+	private Long otpValiditySeconds;
 
 	@Autowired
 	private UserRepository userRepository;
@@ -32,6 +40,12 @@ public class UserServiceImpl implements UserService {
 
 	@Autowired
 	private JwtTokenUtil jwtTokenUtil;
+
+	@Autowired
+	private PasswordEncoder passwordEncoder;
+
+	@Autowired
+	private ConfirmationOtpRepository confirmationOtpRepository;
 
 	@Override
 	public User getUserByLogin(String login) {
@@ -53,6 +67,7 @@ public class UserServiceImpl implements UserService {
 		confirmationToken.setEmail(user.getEmail());
 		confirmationToken.setConfirmationToken(token);
 		confirmationToken.setCreatedDate(new Date());
+
 		confirmationTokenRepository.save(confirmationToken);
 
 		String subject = zFinConfigService.getVerificationEmailSubject();
@@ -79,4 +94,56 @@ public class UserServiceImpl implements UserService {
 		return userRepository.findByLoginAndEncPassword(login, encPassword);
 	}
 
+	private String generateOTP() {
+		// declare randomNo to store the otp
+		// generate 4 digits otp
+		int randomNo = (int) (Math.random() * 9000) + 1000;
+		String otp = String.valueOf(randomNo);
+		// return otp
+		return otp;
+	}
+
+	@Override
+	public void passwordRecovery(String login) throws BusinessException {
+		User user = this.getUserByLogin(login);
+		if (user == null) {
+			throw new BusinessException("error_emailNotExists");
+		}
+
+		String otp = generateOTP();
+
+		ConfirmationOtp confirmationOtp = new ConfirmationOtp();
+		confirmationOtp.setId(UUID.randomUUID().toString());
+		confirmationOtp.setEmail(user.getEmail());
+		confirmationOtp.setConfirmationOtp(otp);
+		confirmationOtp.setCreatedDate(new Date());
+		confirmationOtp.setExpiredDate(new Date(System.currentTimeMillis() + otpValiditySeconds * 1000));
+		confirmationOtpRepository.save(confirmationOtp);
+
+		String subject = zFinConfigService.getPasswordRecoverySubject();
+		String body = zFinConfigService.getPasswordRecoveryBody() + otp;
+		emailService.sendEmailDetailed(user.getEmail(), subject, body);
+
+	}
+
+	@Override
+	public void passwordRecoveryConfirm(PasswordRecoveryConfirmBody passwordRecoveryConfirmBody)
+			throws BusinessException {
+		ConfirmationOtp otp = confirmationOtpRepository.findByConfirmationOtp(passwordRecoveryConfirmBody.getOtp());
+
+		if (otp != null && otp.getExpiredDate().after(new Date())) {
+			User user = this.getUserByLogin(passwordRecoveryConfirmBody.getLogin());
+			String newEncPassword = passwordEncoder.encode(passwordRecoveryConfirmBody.getNewUserPassword());
+			user.setEncPassword(newEncPassword);
+			userRepository.save(user);
+		} else {
+			throw new BusinessException("error_cannotRecoverPassword");
+		}
+	}
+
+	@Override
+	public User getUserFromToken(String token) {
+		String login = jwtTokenUtil.getLoginFromToken(token);
+		return getUserByLogin(login);
+	}
 }

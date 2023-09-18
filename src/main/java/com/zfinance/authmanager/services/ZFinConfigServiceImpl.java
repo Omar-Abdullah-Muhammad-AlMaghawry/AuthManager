@@ -77,4 +77,16 @@ public class ZFinConfigServiceImpl implements ZFinConfigService {
 		return getConfigValueByCode(ZFinConfigsEnum.VERIFICATION_EMAIL_SUBJECT.getCode());
 	}
 
+	@Override
+	public String getPasswordRecoverySubject() throws BusinessException {
+		return getConfigValueByCode(ZFinConfigsEnum.PASSWORD_RECOVERY_SUBJECT.getCode());
+
+	}
+
+	@Override
+	public String getPasswordRecoveryBody() throws BusinessException {
+		return getConfigValueByCode(ZFinConfigsEnum.PASSWORD_RECOVERY_BODY.getCode());
+
+	}
+
 }
