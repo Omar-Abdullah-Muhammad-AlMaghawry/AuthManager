@@ -22,6 +22,7 @@ import com.zfinance.authmanager.dto.requests.signin.PasswordRecoveryDto;
 import com.zfinance.authmanager.dto.response.signin.AuthData;
 import com.zfinance.authmanager.dto.response.signin.AuthorizationResponse;
 import com.zfinance.authmanager.exceptions.BusinessException;
+import com.zfinance.authmanager.mapper.UserMapper;
 import com.zfinance.authmanager.orm.User;
 import com.zfinance.authmanager.services.SecurityService;
 import com.zfinance.authmanager.services.UserService;
@@ -114,7 +115,7 @@ public class AuthController {
 	public ResponseEntity<?> getUserIdFromToken(@RequestParam String token) {
 		try {
 			User user = userService.getUserFromToken(token);
-			return ResponseEntity.ok(user.getId());
+			return ResponseEntity.ok(UserMapper.INSTANCE.mapUser(user));
 		} catch (Exception e) {
 			return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
 		}

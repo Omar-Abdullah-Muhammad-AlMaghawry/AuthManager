@@ -36,10 +36,10 @@ public class User {
 	private String createdAt;
 
 	@Column("active")
-	private boolean active;
+	private Boolean active;
 
 	@Column("banned")
-	private boolean banned;
+	private Boolean banned;
 
 	@Column("ban_expiry_date")
 	private String banExpiryDate;
