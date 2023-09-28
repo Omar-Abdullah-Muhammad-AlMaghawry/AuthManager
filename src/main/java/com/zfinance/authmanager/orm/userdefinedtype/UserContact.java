@@ -1,7 +1,6 @@
 package com.zfinance.authmanager.orm.userdefinedtype;
 
-import org.springframework.data.cassandra.core.mapping.Column;
-import org.springframework.data.cassandra.core.mapping.UserDefinedType;
+import org.springframework.data.mongodb.core.mapping.Field;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,21 +9,20 @@ import lombok.Setter;
 @Setter
 @Getter
 @NoArgsConstructor
-@UserDefinedType("user_contact_type")
 public class UserContact {
 
-	@Column("phone_number")
+	@Field("phone_number")
 	private String phoneNumber;
 
-	@Column("phone_verified")
+	@Field("phone_verified")
 	private boolean phoneVerified;
 
-	@Column("email")
+	@Field("email")
 	private String email;
 
-	@Column("email_verified")
+	@Field("email_verified")
 	private boolean emailVerified;
 
-	@Column("country_code")
+	@Field("country_code")
 	private String countryCode;
 }

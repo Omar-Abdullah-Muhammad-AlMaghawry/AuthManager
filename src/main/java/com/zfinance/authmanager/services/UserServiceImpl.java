@@ -49,17 +49,15 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public User getUserByLogin(String login) {
-		return userRepository.findByLogin(login);
+		return userRepository.findByEmail(login);
 	}
 
 	@Override
 	@Transactional
 	public void saveUser(User user) throws BusinessException {
-		if (userRepository.findByLogin(user.getEmail()) != null) {
+		if (userRepository.findByEmail(user.getEmail()) != null) {
 			throw new BusinessException("error_emailExists");
 		}
-
-		userRepository.save(user);
 
 		String token = jwtTokenUtil.generateToken(user.getEmail());
 		ConfirmationToken confirmationToken = new ConfirmationToken();
@@ -71,8 +69,16 @@ public class UserServiceImpl implements UserService {
 		confirmationTokenRepository.save(confirmationToken);
 
 		String subject = zFinConfigService.getVerificationEmailSubject();
-		String body = zFinConfigService.getVerificationEmailBody() + confirmationToken.getConfirmationToken();
-		emailService.sendEmailDetailed(user.getEmail(), subject, body);
+		String verificationEmailBody = zFinConfigService.getVerificationEmailBody();
+		String confirmationToken2 = confirmationToken.getConfirmationToken();
+		String body = verificationEmailBody + confirmationToken2;
+		if (user.getEmail() != null && subject != null && verificationEmailBody != null && confirmationToken2 != null) {
+			emailService.sendEmailDetailed(user.getEmail(), subject, body);
+
+			userRepository.save(user);
+		} else {
+			throw new BusinessException("error_cannotSendEmail");
+		}
 	}
 
 	@Override
@@ -80,7 +86,7 @@ public class UserServiceImpl implements UserService {
 		ConfirmationToken token = confirmationTokenRepository.findByConfirmationToken(confirmationToken);
 
 		if (token != null) {
-			User user = userRepository.findByLogin(token.getEmail());
+			User user = userRepository.findByEmail(token.getEmail());
 			UserContact userContact = user.getContact();
 			userContact.setEmailVerified(true);
 			userRepository.save(user);
@@ -91,7 +97,7 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public User getUserByLoginAndEncPassword(String login, String encPassword) {
-		return userRepository.findByLoginAndEncPassword(login, encPassword);
+		return userRepository.findByEmailAndEncPassword(login, encPassword);
 	}
 
 	private String generateOTP() {

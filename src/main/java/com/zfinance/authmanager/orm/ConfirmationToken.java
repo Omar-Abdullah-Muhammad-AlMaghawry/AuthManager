@@ -2,9 +2,9 @@ package com.zfinance.authmanager.orm;
 
 import java.util.Date;
 
-import org.springframework.data.cassandra.core.mapping.Column;
-import org.springframework.data.cassandra.core.mapping.PrimaryKey;
-import org.springframework.data.cassandra.core.mapping.Table;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -15,20 +15,20 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Table("zfin_confirmation_token")
+@Document("zfin_confirmation_token")
 public class ConfirmationToken {
 
-	@PrimaryKey
-	@Column("id")
+	@Id
+	@Field("id")
 	private String id;
 
-	@Column("confirmation_token")
+	@Field("confirmation_token")
 	private String confirmationToken;
 
-	@Column("email")
+	@Field("email")
 	private String email;
 
-	@Column("created_date")
+	@Field("created_date")
 	private Date createdDate;
 
 }

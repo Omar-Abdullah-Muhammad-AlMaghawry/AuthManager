@@ -1,7 +1,6 @@
 package com.zfinance.authmanager.orm.userdefinedtype;
 
-import org.springframework.data.cassandra.core.mapping.Column;
-import org.springframework.data.cassandra.core.mapping.UserDefinedType;
+import org.springframework.data.mongodb.core.mapping.Field;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,18 +9,17 @@ import lombok.Setter;
 @Setter
 @Getter
 @NoArgsConstructor
-@UserDefinedType("user_member_record_type")
 public class UserMemberRecord {
 
-	@Column("id")
+	@Field("id")
 	private String id;
 
-	@Column("role")
+	@Field("role")
 	private String role;
 
-	@Column("organization")
+	@Field("organization")
 	private UserOrganization organization;
 
-	@Column("contract_info")
+	@Field("contract_info")
 	private UserContractInfo contractInfo;
 }

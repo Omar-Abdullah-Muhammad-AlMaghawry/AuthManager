@@ -1,8 +1,8 @@
 package com.zfinance.authmanager.orm;
 
-import org.springframework.data.cassandra.core.mapping.Column;
-import org.springframework.data.cassandra.core.mapping.PrimaryKey;
-import org.springframework.data.cassandra.core.mapping.Table;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,22 +11,22 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-@Table("zfin_config")
+@Document("zfin_config")
 public class ZFinConfig {
 
-	@PrimaryKey
-	@Column("id")
-	private Long id;
+	@Id
+	@Field("id")
+	private String id;
 
-	@Column("code")
+	@Field("code")
 	private String code;
 
-	@Column("value")
+	@Field("value")
 	private String value;
 
-	@Column("remarks")
+	@Field("remarks")
 	private String remarks;
 
-	@Column("transaction_class")
+	@Field("transaction_class")
 	private Integer transactionClass;
 }

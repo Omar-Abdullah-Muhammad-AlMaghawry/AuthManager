@@ -1,14 +1,11 @@
 package com.zfinance.authmanager.repositories;
 
-import org.springframework.data.cassandra.repository.CassandraRepository;
-import org.springframework.data.cassandra.repository.Query;
-import org.springframework.data.repository.query.Param;
+import org.springframework.data.mongodb.repository.MongoRepository;
 
 import com.zfinance.authmanager.orm.ConfirmationOtp;
 
-public interface ConfirmationOtpRepository extends CassandraRepository<ConfirmationOtp, String> {
+public interface ConfirmationOtpRepository extends MongoRepository<ConfirmationOtp, String> {
 
-	@Query("SELECT * FROM zfin_confirmation_otp WHERE (confirmation_otp = :p_confirmation_otp) ALLOW FILTERING")
-	ConfirmationOtp findByConfirmationOtp(@Param("p_confirmation_otp") String confirmationOtp);
+	ConfirmationOtp findByConfirmationOtp(String confirmationOtp);
 
 }
