@@ -1,7 +1,6 @@
 package com.zfinance.authmanager.services;
 
 import java.util.Date;
-import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,6 +18,7 @@ import com.zfinance.authmanager.repositories.ConfirmationOtpRepository;
 import com.zfinance.authmanager.repositories.ConfirmationTokenRepository;
 import com.zfinance.authmanager.repositories.UserRepository;
 import com.zfinance.authmanager.security.JwtTokenUtil;
+import com.zfinance.authmanager.services.database.sequence.SequenceGeneratorService;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -47,6 +47,9 @@ public class UserServiceImpl implements UserService {
 	@Autowired
 	private ConfirmationOtpRepository confirmationOtpRepository;
 
+	@Autowired
+	private SequenceGeneratorService sequenceGeneratorService;
+
 	@Override
 	public User getUserByLogin(String login) {
 		return userRepository.findByEmail(login);
@@ -61,7 +64,7 @@ public class UserServiceImpl implements UserService {
 
 		String token = jwtTokenUtil.generateToken(user.getEmail());
 		ConfirmationToken confirmationToken = new ConfirmationToken();
-		confirmationToken.setId(UUID.randomUUID().toString());
+		confirmationToken.setId(sequenceGeneratorService.generateSequence(ConfirmationToken.SEQUENCE_NAME));
 		confirmationToken.setEmail(user.getEmail());
 		confirmationToken.setConfirmationToken(token);
 		confirmationToken.setCreatedDate(new Date());
@@ -119,7 +122,7 @@ public class UserServiceImpl implements UserService {
 		String otp = generateOTP();
 
 		ConfirmationOtp confirmationOtp = new ConfirmationOtp();
-		confirmationOtp.setId(UUID.randomUUID().toString());
+		confirmationOtp.setId(sequenceGeneratorService.generateSequence(ConfirmationOtp.SEQUENCE_NAME));
 		confirmationOtp.setEmail(user.getEmail());
 		confirmationOtp.setConfirmationOtp(otp);
 		confirmationOtp.setCreatedDate(new Date());

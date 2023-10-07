@@ -111,8 +111,8 @@ public class AuthController {
 		}
 	}
 
-	@GetMapping("/getUserIdFromToken")
-	public ResponseEntity<?> getUserIdFromToken(@RequestParam String token) {
+	@GetMapping("/getUserFromToken")
+	public ResponseEntity<?> getUserFromToken(@RequestParam String token) {
 		try {
 			User user = userService.getUserFromToken(token);
 			return ResponseEntity.ok(UserMapper.INSTANCE.mapUser(user));

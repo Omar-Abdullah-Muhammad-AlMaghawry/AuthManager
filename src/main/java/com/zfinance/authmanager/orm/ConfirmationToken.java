@@ -3,6 +3,7 @@ package com.zfinance.authmanager.orm;
 import java.util.Date;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
@@ -30,5 +31,8 @@ public class ConfirmationToken {
 
 	@Field("created_date")
 	private Date createdDate;
+
+	@Transient
+	public static final String SEQUENCE_NAME = "confirmation_token_sequence";
 
 }
