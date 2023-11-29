@@ -39,6 +39,9 @@ public class User {
 	@Field("active")
 	private Boolean active;
 
+	@Field("user_role")
+	private Role userRole;
+
 	@Field("banned")
 	private Boolean banned;
 
