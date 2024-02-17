@@ -8,6 +8,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.zfinance.authmanager.dto.MfaTokenData;
 import com.zfinance.authmanager.dto.requests.signin.PasswordRecoveryConfirmBody;
 import com.zfinance.authmanager.exceptions.BusinessException;
 import com.zfinance.authmanager.orm.ConfirmationOtp;
@@ -19,6 +20,9 @@ import com.zfinance.authmanager.repositories.ConfirmationTokenRepository;
 import com.zfinance.authmanager.repositories.UserRepository;
 import com.zfinance.authmanager.security.JwtTokenUtil;
 import com.zfinance.authmanager.services.database.sequence.SequenceGeneratorService;
+import com.zfinance.authmanager.services.external.ExternalUserService;
+
+import dev.samstevens.totp.exceptions.QrGenerationException;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -50,6 +54,12 @@ public class UserServiceImpl implements UserService {
 	@Autowired
 	private SequenceGeneratorService sequenceGeneratorService;
 
+	@Autowired
+	private ExternalUserService externalUserService;
+
+	@Autowired
+	private TotpManager totpManager;
+
 	@Override
 	public User getUserByLogin(String login) {
 		return userRepository.findByEmail(login);
@@ -57,7 +67,7 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	@Transactional
-	public void saveUser(User user) throws BusinessException {
+	public MfaTokenData saveUser(User user) throws BusinessException, QrGenerationException {
 		if (userRepository.findByEmail(user.getEmail()) != null) {
 			throw new BusinessException("error_emailExists");
 		}
@@ -78,7 +88,14 @@ public class UserServiceImpl implements UserService {
 		if (user.getEmail() != null && subject != null && verificationEmailBody != null && confirmationToken2 != null) {
 			emailService.sendEmailDetailed(user.getEmail(), subject, body);
 
-			userRepository.save(user);
+			// some additional work
+			user.setSecretKey(totpManager.generateSecretKey()); // generating the secret and store with profile
+
+			User savedUser = userRepository.save(user);
+
+			// Generate the QR Code
+			String qrCode = totpManager.getQRCode(savedUser.getSecretKey());
+			return MfaTokenData.builder().mfaCode(savedUser.getSecretKey()).qrCode(qrCode).build();
 		} else {
 			throw new BusinessException("error_cannotSendEmail");
 		}
@@ -93,6 +110,7 @@ public class UserServiceImpl implements UserService {
 			UserContact userContact = user.getContact();
 			userContact.setEmailVerified(true);
 			userRepository.save(user);
+			externalUserService.verifyUserProfileEmail(user.getId());
 		} else {
 			throw new BusinessException("error_cannotVerifyEmail");
 		}
@@ -154,5 +172,11 @@ public class UserServiceImpl implements UserService {
 	public User getUserFromToken(String token) {
 		String login = jwtTokenUtil.getLoginFromToken(token);
 		return getUserByLogin(login);
+	}
+
+	@Override
+	public Boolean verifyTotp(String code, String email) {
+		User user = userRepository.findByEmail(email);
+		return totpManager.verifyTotp(code, user.getSecretKey());
 	}
 }

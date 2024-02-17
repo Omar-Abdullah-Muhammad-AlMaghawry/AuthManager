@@ -7,6 +7,7 @@ import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.zfinance.authmanager.orm.userdefinedtype.UserContact;
 import com.zfinance.authmanager.orm.userdefinedtype.UserMemberRecord;
 
@@ -32,6 +33,13 @@ public class User {
 
 	@Field("enc_password")
 	private String encPassword;
+
+	@Field("mfa_enabled")
+	boolean mfaEnabled;
+
+	@JsonIgnore
+	@Field("secret_key")
+	private String secretKey;
 
 	@Field("created_at")
 	private String createdAt;
