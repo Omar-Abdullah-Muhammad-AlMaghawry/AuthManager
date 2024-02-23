@@ -14,6 +14,7 @@ import com.zfinance.authmanager.dto.response.signin.OrganizationData;
 import com.zfinance.authmanager.dto.response.signin.TokenData;
 import com.zfinance.authmanager.dto.response.signin.UserData;
 import com.zfinance.authmanager.enums.FlagsEnum;
+import com.zfinance.authmanager.enums.RoleEnum;
 import com.zfinance.authmanager.exceptions.BusinessException;
 import com.zfinance.authmanager.orm.User;
 import com.zfinance.authmanager.security.JwtTokenUtil;
@@ -38,13 +39,14 @@ public class SecurityServiceImpl implements SecurityService {
 
 	@Override
 	public String login(LoginRequestDto loginRequestDto) throws BusinessException {
-		authenticateUser(loginRequestDto.getLogin(), loginRequestDto.getPassword());
+		authenticateUser(loginRequestDto.getLogin(), loginRequestDto.getPartnerId(), loginRequestDto.getPassword());
 		return jwtTokenUtil.generateToken(loginRequestDto.getLogin());
 	}
 
 	@Override
 	public AuthData authorization(LoginRequestDto loginRequestDto) throws BusinessException {
-		User user = authenticateUser(loginRequestDto.getLogin(), loginRequestDto.getPassword());
+		User user = authenticateUser(loginRequestDto.getLogin(), loginRequestDto.getPartnerId(), loginRequestDto
+				.getPassword());
 		String token = jwtTokenUtil.generateToken(loginRequestDto.getLogin());
 		TokenData tokenData = new TokenData(token, jwtTokenUtil.getExpirationDateFromToken(token).toString());
 		UserData userData = new UserData(user.getId(), user.getName());
@@ -85,11 +87,14 @@ public class SecurityServiceImpl implements SecurityService {
 		}
 	}
 
-	private User authUser(String login, String password) throws Exception {
+	private User authUser(String login, String partnerId, String password) throws Exception {
 
 		User user = userService.getUserByLogin(login);
-
-		if (passwordEncoder.matches(password, user.getEncPassword())) {
+		if (user.getMembers().get(0).getRole().equals(RoleEnum.MERCHANT.getCode()) && user.getPartnerId() != null
+				&& partnerId != null && user.getPartnerId().equals(partnerId) && passwordEncoder.matches(password, user
+						.getEncPassword())) {
+			return user;
+		} else if (passwordEncoder.matches(password, user.getEncPassword())) {
 			return user;
 		} else {
 			throw new BusinessException("error_invalidUserOrPassword");
@@ -98,7 +103,7 @@ public class SecurityServiceImpl implements SecurityService {
 	}
 
 	@Override
-	public User authenticateUser(String username, String password) throws BusinessException {
+	public User authenticateUser(String username, String partnerId, String password) throws BusinessException {
 
 		try {
 			if ((FlagsEnum.ON.getCode() + "").equals(noLdapFlag)) {
@@ -111,7 +116,7 @@ public class SecurityServiceImpl implements SecurityService {
 //			System.out.println("#:LDAP authentication for : " + username);
 //			getContext(username, password);
 //			return getUserData(username);
-			return authUser(username, password);
+			return authUser(username, partnerId, password);
 		} catch (AuthenticationException e) {
 			throw new BusinessException("error_invalidUser");
 		} catch (BusinessException e) {
@@ -120,5 +125,10 @@ public class SecurityServiceImpl implements SecurityService {
 			e.printStackTrace();
 			throw new BusinessException("error_LDAPError");
 		}
+	}
+
+	@Override
+	public String generateJwt(String username) {
+		return jwtTokenUtil.generateToken(username);
 	}
 }

@@ -8,8 +8,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.zfinance.authmanager.dto.MfaTokenData;
 import com.zfinance.authmanager.dto.requests.signin.PasswordRecoveryConfirmBody;
+import com.zfinance.authmanager.dto.totp.response.MfaTokenData;
 import com.zfinance.authmanager.exceptions.BusinessException;
 import com.zfinance.authmanager.orm.ConfirmationOtp;
 import com.zfinance.authmanager.orm.ConfirmationToken;
@@ -63,6 +63,11 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public User getUserByLogin(String login) {
 		return userRepository.findByEmail(login);
+	}
+
+	@Override
+	public User getUserByLoginAndPartnerId(String login, String partnerId) {
+		return userRepository.findByEmailAndPartnerId(login, partnerId);
 	}
 
 	@Override

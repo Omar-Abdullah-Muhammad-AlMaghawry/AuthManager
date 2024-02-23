@@ -1,11 +1,13 @@
 package com.zfinance.authmanager.controller;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,6 +23,8 @@ import com.zfinance.authmanager.dto.requests.signin.PasswordRecoveryConfirmBody;
 import com.zfinance.authmanager.dto.requests.signin.PasswordRecoveryDto;
 import com.zfinance.authmanager.dto.response.signin.AuthData;
 import com.zfinance.authmanager.dto.response.signin.AuthorizationResponse;
+import com.zfinance.authmanager.dto.totp.request.MfaVerificationRequest;
+import com.zfinance.authmanager.dto.totp.response.MfaVerificationResponse;
 import com.zfinance.authmanager.exceptions.BusinessException;
 import com.zfinance.authmanager.mapper.UserMapper;
 import com.zfinance.authmanager.orm.User;
@@ -119,6 +123,21 @@ public class AuthController {
 		} catch (Exception e) {
 			return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
 		}
+	}
+
+	@PostMapping("/verifyTotp")
+	public ResponseEntity<?> verifyTotp(@Validated @RequestBody MfaVerificationRequest request) throws ParseException {
+		MfaVerificationResponse mfaVerificationResponse = MfaVerificationResponse.builder().username(request
+				.getUsername()).tokenValid(Boolean.FALSE).message("Token is not Valid. Please try again.").build();
+
+		// Validate the OTP
+		if (userService.verifyTotp(request.getTotp(), request.getUsername())) {
+			// GENERATE JWT
+			mfaVerificationResponse = MfaVerificationResponse.builder().username(request.getUsername()).tokenValid(
+					Boolean.TRUE).message("Token is valid").jwt(securityService.generateJwt(request.getUsername()))
+					.build();
+		}
+		return ResponseEntity.ok(mfaVerificationResponse);
 	}
 
 }

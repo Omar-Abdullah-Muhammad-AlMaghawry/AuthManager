@@ -31,11 +31,14 @@ public class User {
 	@Field("email")
 	private String email;
 
+	@Field("partner_id")
+	private String partnerId;
+
 	@Field("enc_password")
 	private String encPassword;
 
 	@Field("mfa_enabled")
-	boolean mfaEnabled;
+	private Boolean mfaEnabled;
 
 	@JsonIgnore
 	@Field("secret_key")

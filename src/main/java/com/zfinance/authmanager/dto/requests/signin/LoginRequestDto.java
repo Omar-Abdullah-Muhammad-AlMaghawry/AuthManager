@@ -9,5 +9,6 @@ import lombok.Setter;
 @NoArgsConstructor
 public class LoginRequestDto {
 	private String login;
+	private String partnerId;
 	private String password;
 }

@@ -11,8 +11,10 @@ public interface SecurityService {
 
 	public User getAuthenticatedUser() throws BusinessException;
 
-	public User authenticateUser(String username, String password) throws BusinessException;
+	public User authenticateUser(String username, String partnerId, String password) throws BusinessException;
 
 	AuthData authorization(LoginRequestDto loginRequestDto) throws BusinessException;
+
+	public String generateJwt(String username);
 
 }

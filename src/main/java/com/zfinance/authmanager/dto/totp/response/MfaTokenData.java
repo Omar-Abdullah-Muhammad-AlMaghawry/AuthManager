@@ -1,4 +1,4 @@
-package com.zfinance.authmanager.dto;
+package com.zfinance.authmanager.dto.totp.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
