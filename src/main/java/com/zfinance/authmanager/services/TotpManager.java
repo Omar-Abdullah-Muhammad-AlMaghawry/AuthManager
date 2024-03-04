@@ -6,7 +6,7 @@ public interface TotpManager {
 
 	public String generateSecretKey();
 
-	public String getQRCode(final String secret) throws QrGenerationException;
+	public String getQRCode(String login, String secret) throws QrGenerationException;
 
 	public boolean verifyTotp(final String code, final String secret);
 

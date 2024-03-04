@@ -89,4 +89,29 @@ public class ZFinConfigServiceImpl implements ZFinConfigService {
 
 	}
 
+	@Override
+	public String getDefaultSignInSubject() throws BusinessException {
+		return getConfigValueByCode(ZFinConfigsEnum.DEFAULT_SIGN_IN_SUBJECT.getCode());
+	}
+
+	@Override
+	public String getDefaultPasswordBody() throws BusinessException {
+		return getConfigValueByCode(ZFinConfigsEnum.DEFAULT_PASSWORD_BODY.getCode());
+	}
+
+	@Override
+	public String getDefaultPartnerIdBody() throws BusinessException {
+		return getConfigValueByCode(ZFinConfigsEnum.PARTNER_ID_BODY.getCode());
+	}
+
+	@Override
+	public String getQrCodeAuthSubject() throws BusinessException {
+		return getConfigValueByCode(ZFinConfigsEnum.QR_CODE_AUTH_SUBJECT.getCode());
+	}
+
+	@Override
+	public String getQrCodeAuthBody() throws BusinessException {
+		return getConfigValueByCode(ZFinConfigsEnum.QR_CODE_AUTH_BODY.getCode());
+	}
+
 }

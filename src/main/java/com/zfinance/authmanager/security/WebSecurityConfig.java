@@ -26,7 +26,7 @@ public class WebSecurityConfig {
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
 		String[] resources = { "/auth/authorization", "/auth/register", "/auth/confirmAccount",
-				"/auth/password/recovery", "/auth/password/recovery/confirm" };
+				"/auth/password/recovery", "/auth/password/recovery/confirm", "/auth/verifyTotp" };
 
 		httpSecurity.csrf().disable().authorizeHttpRequests().antMatchers(resources).permitAll().anyRequest()
 				.authenticated().and().exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint).and()

@@ -86,12 +86,31 @@ public class UserServiceImpl implements UserService {
 
 		confirmationTokenRepository.save(confirmationToken);
 
-		String subject = zFinConfigService.getVerificationEmailSubject();
+		String verificationSubject = zFinConfigService.getVerificationEmailSubject();
 		String verificationEmailBody = zFinConfigService.getVerificationEmailBody();
 		String confirmationToken2 = confirmationToken.getConfirmationToken();
-		String body = verificationEmailBody + confirmationToken2;
-		if (user.getEmail() != null && subject != null && verificationEmailBody != null && confirmationToken2 != null) {
-			emailService.sendEmailDetailed(user.getEmail(), subject, body);
+		String verificationBody = verificationEmailBody + confirmationToken2;
+
+		String defaultSignInSubject = zFinConfigService.getDefaultSignInSubject();
+		String defaultPasswordBody = zFinConfigService.getDefaultPasswordBody();
+		String defaultPassword = "12345 ";
+		String defaultPartnerIdBody = zFinConfigService.getDefaultPartnerIdBody();
+		String partnerId = user.getPartnerId();
+		String defaultSignInBody = defaultPasswordBody + defaultPassword;
+
+		if (partnerId != null)
+			defaultSignInBody += "\n" + defaultPartnerIdBody + partnerId;
+
+		String qrCodeSubject = zFinConfigService.getQrCodeAuthSubject();
+		String qrCodeEmailBody = zFinConfigService.getQrCodeAuthBody();
+
+		if (user.getEmail() != null && verificationSubject != null && verificationEmailBody != null
+				&& confirmationToken2 != null) {
+
+			emailService.sendEmailDetailed(user.getEmail(), verificationSubject, verificationBody);
+
+			if (defaultSignInSubject != null && defaultPasswordBody != null && defaultPassword != null)
+				emailService.sendEmailDetailed(user.getEmail(), defaultSignInSubject, defaultSignInBody);
 
 			// some additional work
 			user.setSecretKey(totpManager.generateSecretKey()); // generating the secret and store with profile
@@ -99,7 +118,13 @@ public class UserServiceImpl implements UserService {
 			User savedUser = userRepository.save(user);
 
 			// Generate the QR Code
-			String qrCode = totpManager.getQRCode(savedUser.getSecretKey());
+			String qrCode = totpManager.getQRCode(savedUser.getEmail(), savedUser.getSecretKey());
+//			int qrCodeSubStringBeginIndex = qrCode.indexOf(',') + 1;
+//			String qrCodeSubString = qrCode.substring(qrCodeSubStringBeginIndex);
+			String qrCodeBody = qrCodeEmailBody + qrCode;
+			if (qrCodeSubject != null && qrCodeEmailBody != null && qrCode != null)
+				emailService.sendEmailDetailed(user.getEmail(), qrCodeSubject, qrCodeBody);
+
 			return MfaTokenData.builder().mfaCode(savedUser.getSecretKey()).qrCode(qrCode).build();
 		} else {
 			throw new BusinessException("error_cannotSendEmail");

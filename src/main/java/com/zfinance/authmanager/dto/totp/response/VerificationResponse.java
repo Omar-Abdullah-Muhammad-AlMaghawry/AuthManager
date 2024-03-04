@@ -7,7 +7,7 @@ import lombok.Data;
 @Data
 @Builder
 @AllArgsConstructor
-public class MfaVerificationResponse {
+public class VerificationResponse {
 	private String username;
 	private String jwt;
 	private boolean mfaRequired;

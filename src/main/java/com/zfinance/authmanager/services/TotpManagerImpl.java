@@ -1,9 +1,12 @@
 package com.zfinance.authmanager.services;
 
+import static com.zfinance.authmanager.constant.TOTPConstants.CODE_VALIDITY_IN_SECONDS;
+import static com.zfinance.authmanager.constant.TOTPConstants.DIGITS;
+import static com.zfinance.authmanager.constant.TOTPConstants.HASHING_ALGO;
+
 import org.springframework.stereotype.Service;
 
 import dev.samstevens.totp.code.CodeVerifier;
-import dev.samstevens.totp.code.HashingAlgorithm;
 import dev.samstevens.totp.exceptions.QrGenerationException;
 import dev.samstevens.totp.qr.QrData;
 import dev.samstevens.totp.qr.QrGenerator;
@@ -29,9 +32,9 @@ public class TotpManagerImpl implements TotpManager {
 	}
 
 	@Override
-	public String getQRCode(String secret) throws QrGenerationException {
-		QrData qrData = new QrData.Builder().label("2FA Server").issuer("Z_finance").secret(secret).digits(6).period(30)
-				.algorithm(HashingAlgorithm.SHA512).build();
+	public String getQRCode(String login, String secret) throws QrGenerationException {
+		QrData qrData = new QrData.Builder().label(login).issuer("Z_finance").secret(secret).digits(DIGITS).period(
+				CODE_VALIDITY_IN_SECONDS).algorithm(HASHING_ALGO).build();
 
 		return Utils.getDataUriForImage(qrGenerator.generate(qrData), qrGenerator.getImageMimeType());
 	}

@@ -7,7 +7,7 @@ import lombok.Data;
 @Data
 @Builder
 @AllArgsConstructor
-public class MfaVerificationRequest {
-	private String username;
+public class VerificationTotpLogin {
+	private String login;
 	private String totp;
 }

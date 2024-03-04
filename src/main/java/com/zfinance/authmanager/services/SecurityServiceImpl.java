@@ -90,7 +90,8 @@ public class SecurityServiceImpl implements SecurityService {
 	private User authUser(String login, String partnerId, String password) throws Exception {
 
 		User user = userService.getUserByLogin(login);
-		if (user.getMembers().get(0).getRole().equals(RoleEnum.MERCHANT.getCode()) && user.getPartnerId() != null
+		if ((user.getMembers().get(0).getRole().equals(RoleEnum.MERCHANT.getCode()) || (user.getUserRole() != null
+				&& user.getUserRole().getName().equals(RoleEnum.MERCHANT.getCode()))) && user.getPartnerId() != null
 				&& partnerId != null && user.getPartnerId().equals(partnerId) && passwordEncoder.matches(password, user
 						.getEncPassword())) {
 			return user;
