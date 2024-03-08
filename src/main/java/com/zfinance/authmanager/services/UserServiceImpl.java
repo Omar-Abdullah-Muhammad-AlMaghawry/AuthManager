@@ -8,7 +8,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.zfinance.authmanager.dto.requests.signin.PasswordRecoveryConfirmBody;
+import com.zfinance.authmanager.dto.requests.signin.NewPasswordConfirmBody;
 import com.zfinance.authmanager.dto.totp.response.MfaTokenData;
 import com.zfinance.authmanager.exceptions.BusinessException;
 import com.zfinance.authmanager.orm.ConfirmationOtp;
@@ -161,7 +161,7 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public void passwordRecovery(String login) throws BusinessException {
+	public void sendOtpForPassword(String login) throws BusinessException {
 		User user = this.getUserByLogin(login);
 		if (user == null) {
 			throw new BusinessException("error_emailNotExists");
@@ -177,20 +177,19 @@ public class UserServiceImpl implements UserService {
 		confirmationOtp.setExpiredDate(new Date(System.currentTimeMillis() + otpValiditySeconds * 1000));
 		confirmationOtpRepository.save(confirmationOtp);
 
-		String subject = zFinConfigService.getPasswordRecoverySubject();
-		String body = zFinConfigService.getPasswordRecoveryBody() + otp;
+		String subject = zFinConfigService.getOtpSubject();
+		String body = zFinConfigService.getOtpBody() + otp;
 		emailService.sendEmailDetailed(user.getEmail(), subject, body);
 
 	}
 
 	@Override
-	public void passwordRecoveryConfirm(PasswordRecoveryConfirmBody passwordRecoveryConfirmBody)
-			throws BusinessException {
-		ConfirmationOtp otp = confirmationOtpRepository.findByConfirmationOtp(passwordRecoveryConfirmBody.getOtp());
+	public void newPasswordConfirm(NewPasswordConfirmBody newPasswordConfirmBody) throws BusinessException {
+		ConfirmationOtp otp = confirmationOtpRepository.findByConfirmationOtp(newPasswordConfirmBody.getOtp());
 
 		if (otp != null && otp.getExpiredDate().after(new Date())) {
-			User user = this.getUserByLogin(passwordRecoveryConfirmBody.getLogin());
-			String newEncPassword = passwordEncoder.encode(passwordRecoveryConfirmBody.getNewUserPassword());
+			User user = this.getUserByLogin(newPasswordConfirmBody.getLogin());
+			String newEncPassword = passwordEncoder.encode(newPasswordConfirmBody.getNewUserPassword());
 			user.setEncPassword(newEncPassword);
 			userRepository.save(user);
 		} else {

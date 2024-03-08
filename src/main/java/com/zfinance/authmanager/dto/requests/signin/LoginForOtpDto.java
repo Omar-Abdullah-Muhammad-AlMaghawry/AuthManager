@@ -7,6 +7,6 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class PasswordRecoveryDto {
+public class LoginForOtpDto {
 	private String login;
 }

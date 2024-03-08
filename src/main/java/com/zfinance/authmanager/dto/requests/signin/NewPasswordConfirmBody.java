@@ -7,7 +7,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class PasswordRecoveryConfirmBody {
+public class NewPasswordConfirmBody {
 	private String login;
 	private String newUserPassword;
 	private String otp;

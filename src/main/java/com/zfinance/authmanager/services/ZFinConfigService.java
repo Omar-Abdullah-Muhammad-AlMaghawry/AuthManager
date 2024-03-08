@@ -38,8 +38,8 @@ public interface ZFinConfigService {
 
 	public String getVerificationEmailSubject() throws BusinessException;
 
-	public String getPasswordRecoverySubject() throws BusinessException;
+	public String getOtpSubject() throws BusinessException;
 
-	public String getPasswordRecoveryBody() throws BusinessException;
+	public String getOtpBody() throws BusinessException;
 
 }

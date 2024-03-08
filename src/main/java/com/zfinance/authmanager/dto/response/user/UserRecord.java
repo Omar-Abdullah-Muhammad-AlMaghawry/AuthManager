@@ -16,6 +16,9 @@ public class UserRecord {
 
 	private String id;
 	private String name;
+	private String partnerId;
+	private String merchantId;
+	private String refName;
 	private String createdAt;
 	private Boolean active;
 	private Boolean banned;

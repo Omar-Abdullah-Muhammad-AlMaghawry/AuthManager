@@ -34,6 +34,12 @@ public class User {
 	@Field("partner_id")
 	private String partnerId;
 
+	@Field("merchant_id")
+	private String merchantId;
+
+	@Field("ref_name")
+	private String refName;
+
 	@Field("enc_password")
 	private String encPassword;
 

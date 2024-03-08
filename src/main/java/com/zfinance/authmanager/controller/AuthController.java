@@ -17,9 +17,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.zfinance.authmanager.dto.requests.registration.RegisterUser;
+import com.zfinance.authmanager.dto.requests.signin.LoginForOtpDto;
 import com.zfinance.authmanager.dto.requests.signin.LoginRequestDto;
-import com.zfinance.authmanager.dto.requests.signin.PasswordRecoveryConfirmBody;
-import com.zfinance.authmanager.dto.requests.signin.PasswordRecoveryDto;
+import com.zfinance.authmanager.dto.requests.signin.NewPasswordConfirmBody;
 import com.zfinance.authmanager.dto.response.signin.AuthData;
 import com.zfinance.authmanager.dto.response.signin.AuthorizationResponse;
 import com.zfinance.authmanager.dto.totp.request.VerificationTotpLogin;
@@ -29,6 +30,7 @@ import com.zfinance.authmanager.mapper.UserMapper;
 import com.zfinance.authmanager.orm.User;
 import com.zfinance.authmanager.services.SecurityService;
 import com.zfinance.authmanager.services.UserService;
+import com.zfinance.authmanager.services.external.ExternalUserServiceImpl;
 
 @RestController
 @RequestMapping("/auth")
@@ -40,6 +42,9 @@ public class AuthController {
 
 	@Autowired
 	private UserService userService;
+
+	@Autowired
+	private ExternalUserServiceImpl externalUserServiceImpl;
 
 	@PostMapping("/login")
 	public ResponseEntity<?> createAuthenticationToken(@RequestBody LoginRequestDto loginRequestDto) {
@@ -73,6 +78,17 @@ public class AuthController {
 		}
 	}
 
+	@PostMapping("/registration")
+	public ResponseEntity<?> registerUser(@RequestBody RegisterUser data) {
+		try {
+			externalUserServiceImpl.registerUser(data);
+			userService.sendOtpForPassword(data.getLogin());
+			return ResponseEntity.ok("label_registerSuccessed");
+		} catch (Exception e) {
+			return new ResponseEntity<>(e.getMessage(), HttpStatus.UNAUTHORIZED);
+		}
+	}
+
 	@PostMapping("/register")
 	public ResponseEntity<?> registerUser(@RequestBody User user) {
 		try {
@@ -94,9 +110,19 @@ public class AuthController {
 	}
 
 	@PostMapping("/password/recovery")
-	public ResponseEntity<?> passwordRecovery(@RequestBody PasswordRecoveryDto passwordRecoveryDto) {
+	public ResponseEntity<?> passwordRecovery(@RequestBody LoginForOtpDto loginForOtpDto) {
 		try {
-			userService.passwordRecovery(passwordRecoveryDto.getLogin());
+			userService.sendOtpForPassword(loginForOtpDto.getLogin());
+			return ResponseEntity.ok("label_sentOtpSuccessed");
+		} catch (Exception e) {
+			return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+		}
+	}
+
+	@PostMapping("/registration/resend-otp")
+	public ResponseEntity<?> resendOtp(@RequestBody LoginForOtpDto loginForOtpDto) {
+		try {
+			userService.sendOtpForPassword(loginForOtpDto.getLogin());
 			return ResponseEntity.ok("label_sentOtpSuccessed");
 		} catch (Exception e) {
 			return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
@@ -104,10 +130,19 @@ public class AuthController {
 	}
 
 	@PostMapping("password/recovery/confirm")
-	public ResponseEntity<?> passwordRecoveryConfirm(
-			@RequestBody PasswordRecoveryConfirmBody passwordRecoveryConfirmBody) {
+	public ResponseEntity<?> passwordRecoveryConfirm(@RequestBody NewPasswordConfirmBody newPasswordConfirmBody) {
 		try {
-			userService.passwordRecoveryConfirm(passwordRecoveryConfirmBody);
+			userService.newPasswordConfirm(newPasswordConfirmBody);
+			return ResponseEntity.ok("Recovery Successed");
+		} catch (Exception e) {
+			return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+		}
+	}
+
+	@PostMapping("registration/confirm")
+	public ResponseEntity<?> passwordRegistrationConfirm(@RequestBody NewPasswordConfirmBody newPasswordConfirmBody) {
+		try {
+			userService.newPasswordConfirm(newPasswordConfirmBody);
 			return ResponseEntity.ok("Recovery Successed");
 		} catch (Exception e) {
 			return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);

@@ -78,14 +78,14 @@ public class ZFinConfigServiceImpl implements ZFinConfigService {
 	}
 
 	@Override
-	public String getPasswordRecoverySubject() throws BusinessException {
-		return getConfigValueByCode(ZFinConfigsEnum.PASSWORD_RECOVERY_SUBJECT.getCode());
+	public String getOtpSubject() throws BusinessException {
+		return getConfigValueByCode(ZFinConfigsEnum.OTP_SUBJECT.getCode());
 
 	}
 
 	@Override
-	public String getPasswordRecoveryBody() throws BusinessException {
-		return getConfigValueByCode(ZFinConfigsEnum.PASSWORD_RECOVERY_BODY.getCode());
+	public String getOtpBody() throws BusinessException {
+		return getConfigValueByCode(ZFinConfigsEnum.OTP_BODY.getCode());
 
 	}
 
