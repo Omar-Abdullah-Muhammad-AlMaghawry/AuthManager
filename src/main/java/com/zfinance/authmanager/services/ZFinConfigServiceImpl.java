@@ -14,7 +14,7 @@ public class ZFinConfigServiceImpl implements ZFinConfigService {
 	private ZFinConfigRepository zFinConfigRepository;
 
 	@Override
-	public String getConfigValueByCode(String code) throws BusinessException {
+	public String getConfigValueByCode(String code) {
 		ZFinConfig etrConfigOptional = zFinConfigRepository.findByCode(code);
 		if (etrConfigOptional != null)
 			return etrConfigOptional.getValue();

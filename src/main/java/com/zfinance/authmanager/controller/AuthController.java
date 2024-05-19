@@ -30,6 +30,7 @@ import com.zfinance.authmanager.mapper.UserMapper;
 import com.zfinance.authmanager.orm.User;
 import com.zfinance.authmanager.services.SecurityService;
 import com.zfinance.authmanager.services.UserService;
+import com.zfinance.authmanager.services.ZFinConfigService;
 import com.zfinance.authmanager.services.external.ExternalUserServiceImpl;
 
 @RestController
@@ -42,6 +43,9 @@ public class AuthController {
 
 	@Autowired
 	private UserService userService;
+
+	@Autowired
+	private ZFinConfigService zFinConfigService;
 
 	@Autowired
 	private ExternalUserServiceImpl externalUserServiceImpl;
@@ -173,6 +177,11 @@ public class AuthController {
 
 		return ResponseEntity.ok(verificationResponse);
 //		if(verificationResponse.ge)
+	}
+
+	@GetMapping("/getConfigValueByCode")
+	public String getConfigValueByCode(@RequestParam String code) {
+		return zFinConfigService.getConfigValueByCode(code);
 	}
 
 }

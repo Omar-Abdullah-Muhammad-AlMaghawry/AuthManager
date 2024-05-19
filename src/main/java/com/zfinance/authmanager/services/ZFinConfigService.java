@@ -4,7 +4,7 @@ import com.zfinance.authmanager.exceptions.BusinessException;
 
 public interface ZFinConfigService {
 
-	public String getConfigValueByCode(String code) throws BusinessException;
+	public String getConfigValueByCode(String code);
 
 	public String getTempPassValue() throws BusinessException;
 
