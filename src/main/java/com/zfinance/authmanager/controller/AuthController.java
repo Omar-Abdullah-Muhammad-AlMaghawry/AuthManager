@@ -49,6 +49,16 @@ public class AuthController {
 
 	@Autowired
 	private ExternalUserServiceImpl externalUserServiceImpl;
+	
+	@GetMapping("test")
+	public ResponseEntity<?> test() {
+		try {
+			System.out.println("hello");
+					return ResponseEntity.ok("label_registerSuccessed");
+		} catch (Exception e) {
+			return new ResponseEntity<>(e.getMessage(), HttpStatus.UNAUTHORIZED);
+		}
+	}
 
 	@PostMapping("/login")
 	public ResponseEntity<?> createAuthenticationToken(@RequestBody LoginRequestDto loginRequestDto) {
@@ -164,7 +174,8 @@ public class AuthController {
 	}
 
 	@PostMapping("/verifyTotp")
-	public ResponseEntity<?> verifyTotp(@RequestBody VerificationTotpLogin data) throws ParseException {
+	public ResponseEntity<?> verifyTotp(@RequestBody VerificationTotpLogin data) throws ParseException,
+			BusinessException {
 		VerificationResponse verificationResponse = VerificationResponse.builder().username(data.getLogin()).tokenValid(
 				Boolean.FALSE).message("TOTP is not Valid. Please try again.").build();
 

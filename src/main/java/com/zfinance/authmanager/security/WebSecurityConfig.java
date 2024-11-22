@@ -25,7 +25,7 @@ public class WebSecurityConfig {
 
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
-		String[] resources = { "/auth/authorization", "/auth/register", "/auth/registration",
+		String[] resources = { "/auth/authorization", "/auth/register", "/auth/registration", "/auth/test",
 				"/auth/registration/resend-otp", "/auth/registration/confirm", "/auth/confirmAccount",
 				"/auth/password/recovery", "/auth/password/recovery/confirm", "/auth/verifyTotp" };
 
